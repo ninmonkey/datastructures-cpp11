@@ -90,11 +90,12 @@ public:
 	LinkedList() : size_(0) { }	
 	int size() { return size_; }
 };
+
 */
 
 ///typedef NodePtr as std::shared_ptr<Node<T>> ?
 
-
+/*
 template <class T>
 class LinkedList;
 
@@ -128,10 +129,10 @@ public:
 	friend LinkedList<T>;
 };
 
-/* right typename def for c++0x, but not implemented in vs2012? 
+right typename def for c++0x, but not implemented in vs2012? 
 template <typename T>
 using NodePtr = std::shared_ptr<Node<T>>;
-*/
+
 
 template <class T>
 class LinkedList
@@ -154,7 +155,7 @@ public:
 };
 
 
-/*
+
 template <class T>
 class LinkedList
 {
@@ -181,14 +182,7 @@ public:
 //	void insert_after(Node::PtrType<T> const, T const& );
 //	void insert_before(Node::PtrType<T> const, T const&);
 };
-*/
 
-
-
-
-
-
-/*
 template <class T>
 void test_print(std::shared_ptr<Node<T>> list) {
 	cout << "list len[" << list.size() << "] = \n\t" << endl;
@@ -196,8 +190,33 @@ void test_print(std::shared_ptr<Node<T>> list) {
 }
 */
 
+struct Node {
+	string datum;
+	std::shared_ptr<Node> next;
+};
+
+class LinkedList {
+	int size_;
+
+public:
+	LinkedList() : size_(0) {}
+	int const size() const { return size_; }
+};
+
+void test_print(LinkedList const& list) {
+	cout << "list [" << list.size() << "] = \n\t" << endl;
+}
 
 int main() {
+	auto n1 = make_shared<Node>();
+	auto n2 = make_shared<Node>();
+
+	LinkedList list = LinkedList();
+
+	test_print(list);
+	
+
+
 	//auto p = std::make_shared<string>();
 	/*
 
@@ -212,23 +231,23 @@ int main() {
 	cout << n0->data << endl;
 	cout << n1->data << endl;
 	*/
-
+	/*
 	auto p = std::make_shared<Node<string> >();
 	//std::shared_ptr<Node <string>> n0 = std::make_shared<Node<string>>();
 	auto n0 = std::make_shared<Node<string>>();
 
 	//..
 	//Node<string>::Type n1 = std::make_shared<Node<string>::Type>();
-	/*
-	std::shared_ptr<Node<string>> head(n0);
-	*/
+
+	//std::shared_ptr<Node<string>> head(n0);
+	
 	n0->datum_ = "fred";
 	//LinkedList<Node<string>> l = LinkedList<Node<string>::PtrType>();
 	//test_print<Node<string>::PtrType>( l );
 
 
 	LinkedList<string> l = LinkedList<string>();
-
+	*/
 
 	cout << "Done." << endl;	
 	cin.get();
