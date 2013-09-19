@@ -101,25 +101,18 @@ class LinkedList;
 template <class T> 
 class Node
 {
-
-public:
 	std::shared_ptr<Node<T>> next;
 	int size_;
+public:
+	typedef std::shared_ptr<Node<T>> PtrType;
+	
 
 	Node() : size_(0) {}
 
 	Node(T const&, std::shared_ptr<Node<T>>);
-
-
-
 //public:
 	// should be private
-	T datum;
-
-
-
-
-	typedef std::shared_ptr<Node<T>> PtrType;
+	T datum_;
 
 	int size() const { return size_; }
 	T const& Datum () const;
@@ -140,12 +133,32 @@ template <typename T>
 using NodePtr = std::shared_ptr<Node<T>>;
 */
 
+template <class T>
+class LinkedList
+{
+	//Node::PtrType<T> head;
+	//Node<string>::PtrType d1;
+
+	// todo: use decl here?
+	//auto d1 = std::make_shared<Node<string> >();
+	//stNode<string> d1;
+	
+	//Node<T>::PtrType d1;
+	std::shared_ptr<Node<T>> d1;
+
+public:	
+	LinkedList() {
+		d1 = std::make_shared<Node<T>>();
+		cout << "ll = ", d1->size(); << endl;
+	}
+};
+
+
 /*
 template <class T>
 class LinkedList
 {
 	//Node::PtrType<T> head;
-
 public:
 	
 	LinkedList();
@@ -168,8 +181,8 @@ public:
 //	void insert_after(Node::PtrType<T> const, T const& );
 //	void insert_before(Node::PtrType<T> const, T const&);
 };
-
 */
+
 
 
 
@@ -209,12 +222,12 @@ int main() {
 	/*
 	std::shared_ptr<Node<string>> head(n0);
 	*/
-	n0->datum = "fred";
+	n0->datum_ = "fred";
 	//LinkedList<Node<string>> l = LinkedList<Node<string>::PtrType>();
 	//test_print<Node<string>::PtrType>( l );
 
 
-	//LinkedList<string> l = LinkedList();
+	LinkedList<string> l = LinkedList<string>();
 
 
 	cout << "Done." << endl;	
