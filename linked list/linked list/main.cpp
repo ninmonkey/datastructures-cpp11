@@ -101,17 +101,27 @@ class LinkedList;
 template <class T> 
 class Node
 {
-	
-	std::shared_ptr<Node> next;
+
+public:
+	std::shared_ptr<Node<T>> next;
 	int size_;
 
-	typedef std::shared_ptr<T> Type;
-public:
-	T datum;
 	Node() : size_(0) {}
-	Node(T const&, std::shared_ptr<Node>);
-	int size() const { return size_; }
 
+	Node(T const&, std::shared_ptr<Node<T>>);
+
+
+
+//public:
+	// should be private
+	T datum;
+
+
+
+
+	typedef std::shared_ptr<Node<T>> PtrType;
+
+	int size() const { return size_; }
 	T const& Datum () const;
 	
 	
@@ -122,13 +132,57 @@ public:
 
 
 	// he does:
-	//friend LinkedList<T>;
+	friend LinkedList<T>;
 };
 
 /* right typename def for c++0x, but not implemented in vs2012? 
 template <typename T>
 using NodePtr = std::shared_ptr<Node<T>>;
 */
+
+/*
+template <class T>
+class LinkedList
+{
+	//Node::PtrType<T> head;
+
+public:
+	
+	LinkedList();
+	~LinkedList();
+
+	LinkedList(LinkedList const&);
+	LinkedList& operator=(LinkedList const&);
+
+	Node::PtrType<T> const head() const;
+	Node::PtrType<T> const tail() const;
+
+	bool empty() const;
+	Node::PtrType<T> first() const;
+	Node::PtrType<T> last() const;
+
+	void prepend(T const&);
+	void append(T const&);
+	//void extract(T const&);
+	void clear();
+//	void insert_after(Node::PtrType<T> const, T const& );
+//	void insert_before(Node::PtrType<T> const, T const&);
+};
+
+*/
+
+
+
+
+
+/*
+template <class T>
+void test_print(std::shared_ptr<Node<T>> list) {
+	cout << "list len[" << list.size() << "] = \n\t" << endl;
+	//auto head = list.head;
+}
+*/
+
 
 int main() {
 	//auto p = std::make_shared<string>();
@@ -156,10 +210,11 @@ int main() {
 	std::shared_ptr<Node<string>> head(n0);
 	*/
 	n0->datum = "fred";
+	//LinkedList<Node<string>> l = LinkedList<Node<string>::PtrType>();
+	//test_print<Node<string>::PtrType>( l );
 
 
-
-
+	//LinkedList<string> l = LinkedList();
 
 
 	cout << "Done." << endl;	
