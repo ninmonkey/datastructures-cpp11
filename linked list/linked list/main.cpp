@@ -71,128 +71,19 @@ make_shared
 	z) displayAllNodes() called on non-empty list.
 
 */
-
-
-/*
-
-struct Node {
-	string data;
-	std::shared_ptr<Node> next;
-
-	Node() : data("default") { }
-};
-
-class LinkedList {
-	std::shared_ptr<Node> head;
-	int size_;
-
-public:	
-	LinkedList() : size_(0) { }	
-	int size() { return size_; }
-};
-
-*/
-
-///typedef NodePtr as std::shared_ptr<Node<T>> ?
-
-/*
-template <class T>
 class LinkedList;
 
-template <class T> 
-class Node
-{
-	std::shared_ptr<Node<T>> next;
-	int size_;
-public:
-	typedef std::shared_ptr<Node<T>> PtrType;
-	
-
-	Node() : size_(0) {}
-
-	Node(T const&, std::shared_ptr<Node<T>>);
-//public:
-	// should be private
-	T datum_;
-
-	int size() const { return size_; }
-	T const& Datum () const;
-	
-	
-	//todo: right type?	// his was:
-		// ListElement const* Next () const;
-	//std::shared_ptr<Node> const Next() const; 
-
-
-
-	// he does:
-	friend LinkedList<T>;
-};
-
-right typename def for c++0x, but not implemented in vs2012? 
-template <typename T>
-using NodePtr = std::shared_ptr<Node<T>>;
-
-
-template <class T>
-class LinkedList
-{
-	//Node::PtrType<T> head;
-	//Node<string>::PtrType d1;
-
-	// todo: use decl here?
-	//auto d1 = std::make_shared<Node<string> >();
-	//stNode<string> d1;
-	
-	//Node<T>::PtrType d1;
-	std::shared_ptr<Node<T>> d1;
-
-public:	
-	LinkedList() {
-		d1 = std::make_shared<Node<T>>();
-		cout << "ll = ", d1->size(); << endl;
-	}
-};
-
-
-
-template <class T>
-class LinkedList
-{
-	//Node::PtrType<T> head;
-public:
-	
-	LinkedList();
-	~LinkedList();
-
-	LinkedList(LinkedList const&);
-	LinkedList& operator=(LinkedList const&);
-
-	Node::PtrType<T> const head() const;
-	Node::PtrType<T> const tail() const;
-
-	bool empty() const;
-	Node::PtrType<T> first() const;
-	Node::PtrType<T> last() const;
-
-	void prepend(T const&);
-	void append(T const&);
-	//void extract(T const&);
-	void clear();
-//	void insert_after(Node::PtrType<T> const, T const& );
-//	void insert_before(Node::PtrType<T> const, T const&);
-};
-
-template <class T>
-void test_print(std::shared_ptr<Node<T>> list) {
-	cout << "list len[" << list.size() << "] = \n\t" << endl;
-	//auto head = list.head;
-}
-*/
-
 struct Node {
-	string datum;
+	//todo:move private: string datum;
 	std::shared_ptr<Node> next;
+
+	Node() : datum("default") {}
+	Node( string const&, std::shared_ptr<Node>);
+public:
+	string datum;
+	//todo: move public: string const& datum() const { return datum_; }
+
+	friend LinkedList;
 };
 
 class LinkedList {
@@ -215,39 +106,6 @@ int main() {
 
 	test_print(list);
 	
-
-
-	//auto p = std::make_shared<string>();
-	/*
-
-	std::shared_ptr<Node> n0 = std::make_shared<Node>();
-	auto n1 = std::make_shared<Node>();
-
-	std::shared_ptr<Node> head(n0);
-
-	n0->data = "1";
-	n1->data = "2";
-
-	cout << n0->data << endl;
-	cout << n1->data << endl;
-	*/
-	/*
-	auto p = std::make_shared<Node<string> >();
-	//std::shared_ptr<Node <string>> n0 = std::make_shared<Node<string>>();
-	auto n0 = std::make_shared<Node<string>>();
-
-	//..
-	//Node<string>::Type n1 = std::make_shared<Node<string>::Type>();
-
-	//std::shared_ptr<Node<string>> head(n0);
-	
-	n0->datum_ = "fred";
-	//LinkedList<Node<string>> l = LinkedList<Node<string>::PtrType>();
-	//test_print<Node<string>::PtrType>( l );
-
-
-	LinkedList<string> l = LinkedList<string>();
-	*/
 
 	cout << "Done." << endl;	
 	cin.get();
