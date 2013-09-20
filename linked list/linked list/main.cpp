@@ -33,6 +33,7 @@ make_shared
 
 
 	crit'q questions:
+		- questions on new move semantics?
 		- private: should I previx with _m or m_Foo etc? ( base: http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Naming )
 		- for single, use unique_ptr where double uses shared_ptr?
 			( will not have cyclic so I won't need weak_ptr)
@@ -74,13 +75,15 @@ make_shared
 class LinkedList;
 
 struct Node {
+public:
 	//todo:move private: string datum;
 	std::shared_ptr<Node> next;
 
 	Node() : datum("default") {}
 	Node( string const&, std::shared_ptr<Node>);
-public:
-	string datum;
+//public:
+	// todo: template the datum type
+	string datum; 
 	//todo: move public: string const& datum() const { return datum_; }
 
 	friend LinkedList;
@@ -88,22 +91,87 @@ public:
 
 class LinkedList {
 	int size_;
+	std::shared_ptr<Node> head;
 
 public:
 	LinkedList() : size_(0) {}
-	int const size() const { return size_; }
+
+	// list size
+	int size() const { return size_; }
+
+	// Add node to start of list
+	void prepend( string const& node );
+	// is empty?
+	bool empty() const { return size() == 0; }
+	// free it
+	void clear() {
+		//todo: delete head/set to nullptr func
+		//size_ = 0;
+	}
+
+	// ouptut for debug
+	void str() const;
+
+	// insert before
+	void insert_before( std::shared_ptr<Node>, string const& datum);
 };
 
-void test_print(LinkedList const& list) {
-	cout << "list [" << list.size() << "] = \n\t" << endl;
+// Add node to start of list
+void LinkedList::prepend( string const& datum ) {
+	size_ += 1;
+
+	auto new_node = make_shared<Node>();
+	new_node->datum = datum;
+	
+
+	if(head != nullptr)
+		new_node->next = head;
+
+	head = new_node;
 }
 
-int main() {
-	auto n1 = make_shared<Node>();
-	auto n2 = make_shared<Node>();
+void LinkedList::insert_before( std::shared_ptr<Node>, string const& datum)
+{
 
+}
+
+// string for debug
+void LinkedList::str() const {
+	cout << "list [" << size() << "] = \t";
+	//todo: as c++11 for-each loop
+	auto cur = head;
+	while(cur != nullptr) 
+	{
+		cout << cur->datum << ", ";
+		cur = cur->next;
+	}
+	cout << endl;
+}
+
+void test_print(LinkedList const& list) {
+	list.str();
+}
+
+// generate basic list for test
+LinkedList test_build3() {
 	LinkedList list = LinkedList();
+	// ask crit: ok to: append(make_shared<...>) or memory issue?
+	//auto n1 = make_shared<Node>();
+	//auto n2 = make_shared<Node>();
+	//auto n3 = make_shared<Node>();
+	
+	list.prepend("fred");
+	list.prepend("bob");
+	list.prepend("hank");
 
+	return list;
+}
+int main() {
+	
+
+	//LinkedList list = LinkedList();
+
+	LinkedList list = test_build3();
 	test_print(list);
 	
 
