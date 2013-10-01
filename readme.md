@@ -5,6 +5,10 @@ About:
 Author:
 	Jake Bolton (2013/09)
 
+## ref links ##
+
+	http://stackoverflow.com/questions/8114276/how-do-i-pass-a-unique-ptr-argument-to-a-constructor-or-a-function/8114913#8114913
+
 ## todo ##
 
 	- types:

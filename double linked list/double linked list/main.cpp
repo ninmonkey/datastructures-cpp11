@@ -2,19 +2,18 @@
 #include <memory>
 #include <string>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+
 /* todo
 
 	- best c++ naming cases is?
-	- gcc =c++11/0x -Wall -Wextra or whatever else
-	- use `std::make_shared` vs shared_ptr ?
+	- gcc =c++11/0x -Wall -Wextra or whatever else	
 	- lint
 
-	- I could have : singly list use unique_ptr but doubly use shared_ptr
-
 About:
-	Singly linked list. For production code use something like std::forward_list
-
+	doubly linked list. For production code use something like std::forward_list or std::list
 
 make_shared
 
@@ -30,7 +29,6 @@ make_shared
 
 	ref :
 		started with, tried to improve: http://www.brpreiss.com/books/opus4/html/page89.html
-
 
 	crit'q questions:
 		- questions on new move semantics?
@@ -72,12 +70,12 @@ make_shared
 	z) displayAllNodes() called on non-empty list.
 
 */
-class LinkedList;
+class DoubleList;
 
 struct Node {
 public:
 	//todo:move private: string datum;
-	std::shared_ptr<Node> next;
+	//std::shared_ptr<Node> next;
 
 	Node() : datum("default") {}
 	Node( string const&, std::shared_ptr<Node>);
@@ -86,105 +84,53 @@ public:
 	string datum; 
 	//todo: move public: string const& datum() const { return datum_; }
 
-	friend LinkedList;
+	//	friend DoubleList;
 };
 
-class LinkedList {
+class DoubleList {
 	int size_;
 	std::shared_ptr<Node> head;
 	//std::shared_ptr<Node> tail; // not used at the moment for simplicity
 
+	//void DoubleList::prepend( string const& datum ) {
+	// Add node to start of list
+	//void DoubleList::append( string const& datum ) {
+
 public:
-	LinkedList() : size_(0) {}
+	DoubleList() : size_(0) {}
 
 	// list size
 	int size() const { return size_; }
-
-	// Add node to start of list
-	void prepend( string const& node );
-	// Add node to end of list
-	void append( string const& node );
-	// is empty?
 	bool empty() const { return size() == 0; }
 	
-	// free memory, empty list
-	void clear() {
-		//If raw pointers, you have more complicated logic. insead we do:
-		head = nullptr;
-		size_ = 0;
-	}
-
 	// ouptut for debug
 	void str() const;
-
-	// insert before
-	void insert_before( std::shared_ptr<Node>, string const& datum);
 };
 
-// Add node to start of list
-void LinkedList::prepend( string const& datum ) {
-	size_ += 1;	
-	
-	auto new_node = make_shared<Node>();
-	new_node->datum = datum;
-	
-
-	if(head != nullptr)
-		new_node->next = head;
-
-	head = new_node;
-	
-	//todo: just do?
-	//insert_before( head, datum );
-}
-
-// Add node to start of list
-void LinkedList::append( string const& datum ) {
-	size_ += 1;	
-	
-	auto new_node = make_shared<Node>();
-	new_node->datum = datum;
-
-	auto cur = head;
-	while(cur->next != nullptr)
-		cur = cur->next;
-
-	//cur->next is nullptr
-	cur->next = new_node;
-	new_node->next = nullptr; // default means this is already set
-
-	//todo: just do?
-	//insert_after(tail, datum );
-}
-
-/*
-void LinkedList::insert_before( std::shared_ptr<Node>, string const& datum)
-{	
-
-
-}*/
-
 // string for debug
-void LinkedList::str() const {
+void DoubleList::str() const {
 	cout << "list [" << size() << "] = \t";
 	//todo: as c++11 for-each loop
 	auto cur = head;
 
+	/*
 	//or: for( auto cur = head; cur != nullptr; cur = cur->next ) {  }
 	while(cur != nullptr) {
 		cout << cur->datum << ", ";
 		cur = cur->next;
 	}
+	*/
 	cout << endl;
 }
 
-void test_print(LinkedList const& list) {
+void test_print(DoubleList const& list) {
 	list.str();
 }
 
 // generate basic list for test
-LinkedList test_build3() {
-	LinkedList list = LinkedList();
+/*
+DoubleList test_build3() {
+	DoubleList list = DoubleList();
 
 	list.prepend("fred");
 	list.prepend("bob");
@@ -193,20 +139,20 @@ LinkedList test_build3() {
 	list.append("jane");
 
 	return list;
-}
+}*/
 int main() {
 	
 
-	//LinkedList list = LinkedList();
+	//DoubleList list = DoubleList();
 
-	LinkedList list = test_build3();
-	test_print(list);
+	//DoubleList list = test_build3();
+	//test_print(list);
 
-	list.clear();
-	test_print(list);
+	//list.clear();
+	//test_print(list);
 	
 
 	cout << "Done." << endl;	
-	cin.get();
+	std::cin.get();
 	return 0;
 }
