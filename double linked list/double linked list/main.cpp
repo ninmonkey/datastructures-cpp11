@@ -134,9 +134,27 @@ public:
 	void addAtHead(string const& datum);
 	void addAtTail(string const& datum);
 
+	string removeAtHead();
+
 	// ouptut for debug
 	void print() const;
 };
+
+// remove from head
+string DoubleList::removeAtHead() {
+	if(head == nullptr)
+		return "";
+
+	string datum = head->data();
+
+	head = head->next;
+	if(head == nullptr)
+		tail = nullptr;
+	else
+		head->prev = nullptr;
+
+	return datum;
+}
 
 // append to tail
 void DoubleList::addAtTail(string const& datum) {
@@ -197,6 +215,8 @@ DoubleList test_build3() {
 	list.addAtTail("sally");
 	list.addAtTail("jane");
 
+	//todo: assertEquals: hank, bob, fred, sally, jane
+
 	return list;
 }
 int main() {
@@ -208,6 +228,12 @@ int main() {
 	//test_print(list);
 
 	//list.clear();
+	list2.print();
+
+	auto n1 = list2.removeAtHead();
+	auto n2 = list2.removeAtHead();
+
+	cout << "removeAtHead() x2 = " << n1 << ", " << n2 << endl;
 	list2.print();
 	
 
