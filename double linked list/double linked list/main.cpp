@@ -6,11 +6,17 @@ using std::cout;
 using std::endl;
 using std::string;
 
+using std::shared_ptr;
+using std::make_shared;
+
+
 /* todo
 
 	- best c++ naming cases is?
 	- gcc =c++11/0x -Wall -Wextra or whatever else	
 	- lint
+	- ref: http://www.cplusplus.com/articles/Lw6AC542/
+
 
 About:
 	doubly linked list. For production code use something like std::forward_list or std::list
@@ -41,6 +47,9 @@ make_shared
 
 == unit tests ==
 	move datum private
+
+	copy constructor
+	assign operator
 
 	a) addToHead() called on empty list
 	b) addToHead() called on non-empty list
@@ -73,83 +82,140 @@ make_shared
 class DoubleList;
 
 struct Node {
-public:
-	//todo:move private: string datum;
-	//std::shared_ptr<Node> next;
-
-	Node() : datum("default") {}
-	Node( string const&, std::shared_ptr<Node>);
-//public:
-	// todo: template the datum type
 	string datum; 
-	//todo: move public: string const& datum() const { return datum_; }
+	shared_ptr<Node> next;
+	shared_ptr<Node> prev;
 
-	//	friend DoubleList;
+public:
+	Node() : datum("default") {}
+	Node( string const&, shared_ptr<Node> prev, shared_ptr<Node> next );
+	~Node() {}
+
+	// get/set data
+	string data() const { return datum; }
+	void data(string const& datum) { this->datum = datum; }
+
+friend class DoubleList;
 };
 
+Node::Node(string const& datum, shared_ptr<Node> prev = nullptr, shared_ptr<Node> next = nullptr ) {
+	this->prev = prev;
+	this->next = next;
+	this->datum = datum;
+}
+
 class DoubleList {
-	int size_;
-	std::shared_ptr<Node> head;
-	//std::shared_ptr<Node> tail; // not used at the moment for simplicity
+	int length;
+
+	//head and tail start as nullptr
+	shared_ptr<Node> head;
+	shared_ptr<Node> tail;
 
 	//void DoubleList::prepend( string const& datum ) {
 	// Add node to start of list
 	//void DoubleList::append( string const& datum ) {
 
 public:
-	DoubleList() : size_(0) {}
+	DoubleList() : length(0) {}
+	~DoubleList() {}
 
 	// list size
-	int size() const { return size_; }
+	int size() const { return length; }
 	bool empty() const { return size() == 0; }
 	
+	// erase all
+	void clear();
+
+	//todo:
+	void erase(string const& datum); // or arg node vs datum?
+	void erase(shared_ptr<Node> const& node);
+
+	//todo: private?
+	void addAtHead(string const& datum);
+	void addAtTail(string const& datum);
+
 	// ouptut for debug
-	void str() const;
+	void print() const;
 };
 
+// append tail
+void DoubleList::addAtTail(string const& datum) {
+	length += 1;
+
+	auto node = make_shared<Node>(datum);
+
+	//if tail exists
+	if(tail != nullptr) {	
+		node->prev = tail;
+		tail->next = node;
+		tail = node;
+	} else {
+		//no tail, but head?
+		
+	}
+}
+
+// prepend head 
+void DoubleList::addAtHead(string const& datum) {
+	length += 1;
+
+	auto node = make_shared<Node>(datum);
+
+	//head exists
+	if(head != nullptr) {
+		node->next = head;
+		head->prev = node;
+		head = node;
+	} else {
+		head = node;
+	}
+
+	if(tail == nullptr) {
+		tail = node;
+	}
+}
+
 // string for debug
-void DoubleList::str() const {
+void DoubleList::print() const {
 	cout << "list [" << size() << "] = \t";
 	//todo: as c++11 for-each loop
-	auto cur = head;
 
-	/*
-	//or: for( auto cur = head; cur != nullptr; cur = cur->next ) {  }
+	//todo: actual iter interface?	
+	auto cur = head;
 	while(cur != nullptr) {
 		cout << cur->datum << ", ";
 		cur = cur->next;
 	}
-	*/
+	
 	cout << endl;
-}
-
-void test_print(DoubleList const& list) {
-	list.str();
+	if(head != nullptr)
+		cout << "head=" << head->datum;
+	if(tail != nullptr)
+		cout << " , tail=" << tail->datum << endl;
 }
 
 // generate basic list for test
-/*
 DoubleList test_build3() {
 	DoubleList list = DoubleList();
 
-	list.prepend("fred");
-	list.prepend("bob");
-	list.prepend("hank");
-	list.append("sally");
-	list.append("jane");
+	list.addAtHead("fred");
+	list.addAtHead("bob");
+	list.addAtHead("hank");
+	list.addAtTail("sally");
+	list.addAtTail("jane");
 
 	return list;
-}*/
+}
 int main() {
 	
 
-	//DoubleList list = DoubleList();
+	auto list = DoubleList();
 
-	//DoubleList list = test_build3();
+	auto list2 = test_build3();
 	//test_print(list);
 
 	//list.clear();
-	//test_print(list);
+	list2.print();
 	
 
 	cout << "Done." << endl;	
