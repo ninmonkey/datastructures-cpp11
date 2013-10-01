@@ -138,41 +138,34 @@ public:
 	void print() const;
 };
 
-// append tail
+// append to tail
 void DoubleList::addAtTail(string const& datum) {
 	length += 1;
 
-	auto node = make_shared<Node>(datum);
+	auto node = make_shared<Node>(datum, tail, nullptr);
 
-	//if tail exists
-	if(tail != nullptr) {	
-		node->prev = tail;
+	if(tail != nullptr) {
 		tail->next = node;
-		tail = node;
 	} else {
-		//no tail, but head?
-		
+		head = node;
 	}
+
+	tail = node;
 }
 
 // prepend head 
 void DoubleList::addAtHead(string const& datum) {
 	length += 1;
 
-	auto node = make_shared<Node>(datum);
+	auto node = make_shared<Node>(datum, nullptr, head);
 
-	//head exists
 	if(head != nullptr) {
-		node->next = head;
-		head->prev = node;
-		head = node;
+		head->prev = node;		
 	} else {
-		head = node;
-	}
-
-	if(tail == nullptr) {
 		tail = node;
 	}
+
+	head = node;
 }
 
 // string for debug
