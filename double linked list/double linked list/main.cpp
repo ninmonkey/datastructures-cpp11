@@ -115,6 +115,8 @@ class DoubleList {
 	// Add node to start of list
 	//void DoubleList::append( string const& datum ) {
 
+	void freeNode(shared_ptr<Node> node);
+
 public:
 	DoubleList() : length(0) {}
 	~DoubleList() {}
@@ -135,13 +137,41 @@ public:
 	void addAtTail(string const& datum);
 
 	string removeAtHead();
+	string removeAtTail();
 
 	// ouptut for debug
 	void print() const;
 };
 
+// free one node
+void DoubleList::freeNode(shared_ptr<Node> node) {
+	node->prev = nullptr;
+	node->next = nullptr;
+	
+	// I think this causes the prev two lines to be redundant 
+	node = nullptr; 
+}
+
+// free references
+void DoubleList::clear() {
+	auto cur = head;
+
+	while(cur != nullptr) {
+		auto last = cur;
+		cur = cur->next;
+
+		freeNode(last);			
+	}
+
+	head = nullptr;
+	tail = nullptr;
+	length = 0;
+}
+
 // remove from head
 string DoubleList::removeAtHead() {
+	length--;
+	// todo: other code would return nullptr to shared_ptr<Node>
 	if(head == nullptr)
 		return "";
 
@@ -156,17 +186,34 @@ string DoubleList::removeAtHead() {
 	return datum;
 }
 
+// remove from tail
+string DoubleList::removeAtTail() {
+	length--;
+	// todo: decide since other code would return nullptr to shared_ptr<Node>
+	if(tail == nullptr)
+		return "";
+	
+	string datum = tail->data();
+
+	tail = tail->prev;
+	if(tail == nullptr)
+		head = nullptr;
+	else
+		tail->next = nullptr;
+
+	return datum;	
+}
+
 // append to tail
 void DoubleList::addAtTail(string const& datum) {
 	length += 1;
 
 	auto node = make_shared<Node>(datum, tail, nullptr);
 
-	if(tail != nullptr) {
+	if(tail != nullptr)
 		tail->next = node;
-	} else {
+	else
 		head = node;
-	}
 
 	tail = node;
 }
@@ -177,18 +224,17 @@ void DoubleList::addAtHead(string const& datum) {
 
 	auto node = make_shared<Node>(datum, nullptr, head);
 
-	if(head != nullptr) {
+	if(head != nullptr)
 		head->prev = node;		
-	} else {
-		tail = node;
-	}
+	else
+		tail = node;	
 
 	head = node;
 }
 
 // string for debug
 void DoubleList::print() const {
-	cout << "list [" << size() << "] = \t";
+	cout << "\nlist [" << size() << "] = \t";
 	//todo: as c++11 for-each loop
 
 	//todo: actual iter interface?	
@@ -206,7 +252,7 @@ void DoubleList::print() const {
 }
 
 // generate basic list for test
-DoubleList test_build3() {
+DoubleList test_build5() {
 	DoubleList list = DoubleList();
 
 	list.addAtHead("fred");
@@ -222,12 +268,11 @@ DoubleList test_build3() {
 int main() {
 	
 
-	auto list = DoubleList();
+	auto list1 = DoubleList();
 
-	auto list2 = test_build3();
-	//test_print(list);
+	/* todo: convert to unit tests */
 
-	//list.clear();
+	auto list2 = test_build5();
 	list2.print();
 
 	auto n1 = list2.removeAtHead();
@@ -235,7 +280,34 @@ int main() {
 
 	cout << "removeAtHead() x2 = " << n1 << ", " << n2 << endl;
 	list2.print();
+
+	n1 = list2.removeAtTail();
+	n2 = list2.removeAtTail();
+
+	cout << "removeAtTail() x2 = " << n1 << ", " << n2 << endl;
+	list2.print();
+
 	
+	list2 = test_build5();	
+
+	cout << "Empty (should be no)= ";
+	if(list2.empty()) cout << "yes";
+	else cout << "no";
+	cout << endl;	
+
+	cout << "clear()" << endl;
+	list2.clear();
+	list2.print();
+
+	// invalid removes
+	n1 = list2.removeAtHead();
+	n2 = list2.removeAtTail();
+
+	cout << "Empty (should be yes) = ";
+	list2.clear();
+	if(list2.empty()) cout << "yes";
+	else cout << "no";
+	cout << endl;
 
 	cout << "Done." << endl;	
 	std::cin.get();
